@@ -7,6 +7,9 @@ A python script to extract rpx files from Wii U titles
 ## Python Requirements:
 cryptography
 
+## Windows Requirements:
+curl installed to PATH
+
 ## Notes:
 - There are two ways to get rpx files from titles, getting it from the WUP format or from the Loadiine format
 - WUP format is used to install titles which can be gained by using [disc2app](https://github.com/koolkdev/disc2app)
