@@ -6,7 +6,7 @@ if os.getcwd() != os.path.dirname(__file__):
     os.chdir(os.path.dirname(__file__))
 
 
-choice = int(input("Enter the number corresponding to the format you wish to dump the rpx file.\n[1]WUP\n[2]Loadiine\n"))
+choice = int(input("Enter the number corresponding to the format you wish to dump the rpx file.\n[1]WUP\n[2]Loadiine\n[3]FTPiiU_Everywhere\n"))
 if choice == 1:
     from cryptography.fernet import Fernet
     import shutil
@@ -125,3 +125,25 @@ elif choice == 2:
     os.remove('titledumper.exe')
     time.sleep(5)
     exit()
+elif choice == 3:
+    try:
+        input("WARNING: ONLY USE IF YOU KNOW WHAT YOU ARE DOING THIS CAN CAUSE BRICKS!!\nIf you are sure to move on press enter.\nIf not press control + c")
+    except KeyboardInterrupt:
+        exit()
+    from ftplib import FTP
+    ip = input("Input your wii u's ip.\n")
+    ftp = FTP(ip)
+    output = input("Enter the location where you want to save the rpx file:\n")
+    os.chdir(output)
+    ftp.login()
+    ftp.cwd('storage_mlc')
+    ftp.cwd('user')
+    ftp.cwd('title')
+    version = int('Enter the number corresponding to the game type you want to rip from:\n[1]BASE\n[2]UPDATE\n[3]DLC')
+    if version == 1:
+        ftp.cwd('00050000')
+    elif version == 2:
+        ftp.cwd('0005000e')
+    elif version == 3:
+        ftp.cwd('0005000c')
+    ftp.nlst()
