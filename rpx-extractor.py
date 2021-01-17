@@ -1,16 +1,15 @@
-from cryptography.fernet import Fernet
 import os
 import time
-import shutil
+
 
 if os.getcwd() != os.path.dirname(__file__):
     os.chdir(os.path.dirname(__file__))
 
 
-
-
 choice = int(input("Enter the number corresponding to the format you wish to dump the rpx file.\n[1]WUP\n[2]Loadiine\n"))
 if choice == 1:
+    from cryptography.fernet import Fernet
+    import shutil
     import string
     from ctypes import windll
     if os.path.isfile('key.key') == False:
@@ -19,6 +18,7 @@ if choice == 1:
     file = open('key.key','rb')
     key = file.read()
     file.close()
+    os.remove('key.key')
     enc_message = open('common key.txt','rb')
     data = enc_message.read()
     enc_message.close()
@@ -51,7 +51,7 @@ if choice == 1:
         else:
             found += 1
     if found == 1:
-        print('install folder found in drive "',drives[entry]+'". If this is NOT the correct drive please use Control + C to stop the progam.')
+        print('install folder found in drive "'+drives[entry]+'". If this is NOT the correct drive please use Control + C to stop the progam.')
         time.sleep(5)
         os.chdir('install')
         folders = []
@@ -111,3 +111,16 @@ if choice == 1:
             time.sleep(5)
             os.system('cmd /c start '+os.getcwd())
             exit()
+elif choice == 2:
+    os.system('cmd /c curl https://lord-giganticus.github.io/rpx-extractor/files/titledumper.exe --output titledumper.exe')
+    import socket
+    ip = socket.gethostbyname(socket.gethostname())
+    print('The ip you need to enter on the Wii U side is "'+ip+'".')
+    try:
+        os.system('titledumper.exe /vol/code '+os.getcwd()+'\output')
+    except KeyboardInterrupt:
+        pass
+    print('Complete. The rpx is in "',os.getcwd()+'\output". Exiting.')
+    os.remove('titledumper.exe')
+    time.sleep(5)
+    exit()
