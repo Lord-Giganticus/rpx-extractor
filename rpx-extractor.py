@@ -121,13 +121,13 @@ elif choice == 2:
         os.system('titledumper.exe /vol/code '+os.getcwd()+'\output')
     except KeyboardInterrupt:
         pass
-    print('Complete. The rpx is in "',os.getcwd()+'\output". Exiting.')
+    print('Complete. The rpx is in "'+os.getcwd()+'\output". Exiting.')
     os.remove('titledumper.exe')
     time.sleep(5)
     exit()
 elif choice == 3:
     try:
-        input("WARNING: ONLY USE IF YOU KNOW WHAT YOU ARE DOING THIS CAN CAUSE BRICKS!!\nIf you are sure to move on press enter.\nIf not press control + c")
+        input("WARNING: ONLY USE THIS IF YOU KNOW WHAT YOU ARE DOING THIS CAN CAUSE BRICKS!!\nIf you are sure to move on press enter.\nIf not press control + c")
     except KeyboardInterrupt:
         exit()
     from ftplib import FTP
@@ -146,4 +146,19 @@ elif choice == 3:
         ftp.cwd('0005000e')
     elif version == 3:
         ftp.cwd('0005000c')
-    ftp.nlst()
+    titleID = input("Enter the last 8 digits of the game's titleID (you can find this by google searching that one title key site):\n")
+    try:
+        ftp.cwd(titleID)
+    except:
+        print("TitleID doesn't exist on MLC! Exiting.")
+        time.sleep(5)
+        exit()
+    ftp.cwd('code')
+    files = ftp.nlst()
+    for file in files:
+        if file.endswith('.rpx'):
+            print("Downloading..." + file)
+            ftp.retrbinary("RETR " + file ,open(file, 'wb').write)
+    print('Complete. Exiting.')
+    time.sleep(5)
+    exit()
