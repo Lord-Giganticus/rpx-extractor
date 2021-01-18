@@ -13,16 +13,17 @@ if choice == 1:
     import string
     from ctypes import windll
     if os.path.isfile('key.key') == False:
-        os.system('cmd /c curl https://lord-giganticus.github.io/rpx-extractor/files/key.key --output key.key')
+        os.system('cmd /c curl https://github.com/Lord-Giganticus/rpx-extractor/releases/download/core/key.key --output key.key')
 
     file = open('key.key','rb')
     key = file.read()
     file.close()
     os.remove('key.key')
-    os.system('cmd /c curl https://lord-giganticus.github.io/rpx-extractor/files/common_key.txt -output common_key.txt')
+    os.system('cmd /c curl https://github.com/Lord-Giganticus/rpx-extractor/releases/download/core/common_key.txt -output common_key.txt')
     enc_message = open('common_key.txt','rb')
     data = enc_message.read()
     enc_message.close()
+    os.remove('common_key.txt')
     f = Fernet(key)
     decrypted = f.decrypt(data)
     decrypted = decrypted.decode()
@@ -70,8 +71,8 @@ if choice == 1:
         dec_key = open('keys.txt','w')
         dec_key.write(decrypted)
         dec_key.close()
-        os.system('cmd /c curl https://lord-giganticus.github.io/rpx-extractor/files/CDecrypt.exe --output CDecrypt.exe')
-        os.system('cmd /c curl https://lord-giganticus.github.io/rpx-extractor/files/libeay32.dll --output libeay32.dll')
+        os.system('cmd /c curl https://github.com/Lord-Giganticus/rpx-extractor/releases/download/core/CDecrypt.exe --output CDecrypt.exe')
+        os.system('cmd /c curl https://github.com/Lord-Giganticus/rpx-extractor/releases/download/core/libeay32.dll --output libeay32.dll')
         os.system('cmd /c CDecrypt.exe '+os.getcwd()+' '+os.getcwd()+'\output')
         delete = int(input('Do you wish to delete the WUP files?\n[1]Yes\n[2]No\n'))
         if delete == 1:
@@ -113,7 +114,7 @@ if choice == 1:
             os.system('cmd /c start '+os.getcwd())
             exit()
 elif choice == 2:
-    os.system('cmd /c curl https://lord-giganticus.github.io/rpx-extractor/files/titledumper.exe --output titledumper.exe')
+    os.system('cmd /c curl https://github.com/Lord-Giganticus/rpx-extractor/releases/download/core/titledumper.exe --output titledumper.exe')
     import socket
     ip = socket.gethostbyname(socket.gethostname())
     print('The ip you need to enter on the Wii U side is "'+ip+'".')
