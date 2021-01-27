@@ -1,32 +1,29 @@
 import os
 import time
 
-
 if os.getcwd() != os.path.dirname(__file__):
     os.chdir(os.path.dirname(__file__))
 
-
-choice = int(input("Enter the number corresponding to the format you wish to dump the rpx file.\n[1]WUP\n[2]Loadiine\n[3]FTPiiU_Everywhere\n"))
+choice = int(input("Enter the number corresponding to the format you wish to dump the rpx file.\n[1]WUP\n[2]Loadiine\n[3]FTPiiU_Everywhere\n[4]Dumpling\n"))
 if choice == 1:
     from cryptography.fernet import Fernet
     import shutil
     import string
     from ctypes import windll
     if os.path.isfile('key.key') == False:
-        os.system('cmd /c curl https://github.com/Lord-Giganticus/rpx-extractor/releases/download/core/key.key --output key.key')
-
+        os.system('cmd /c curl -L https://github.com/Lord-Giganticus/rpx-extractor/releases/download/core/key.key > key.key')
     file = open('key.key','rb')
     key = file.read()
     file.close()
-    os.remove('key.key')
-    os.system('cmd /c curl https://github.com/Lord-Giganticus/rpx-extractor/releases/download/core/common_key.txt -output common_key.txt')
+    os.system('cmd /c curl -L https://github.com/Lord-Giganticus/rpx-extractor/releases/download/core/common_key.txt > common_key.txt')
     enc_message = open('common_key.txt','rb')
     data = enc_message.read()
     enc_message.close()
-    os.remove('common_key.txt')
     f = Fernet(key)
     decrypted = f.decrypt(data)
     decrypted = decrypted.decode()
+    os.remove('key.key')
+    os.remove('common_key.txt')
 
     drives = [] # From https://stackoverflow.com/a/827398
     bitmask = windll.kernel32.GetLogicalDrives()
@@ -52,6 +49,10 @@ if choice == 1:
             entry += 1
         else:
             found += 1
+    if entry > len(drives):
+        print("No drive found with the install folder. Exiting.")
+        time.sleep(2)
+        exit()
     if found == 1:
         print('install folder found in drive "'+drives[entry]+'". If this is NOT the correct drive please use Control + C to stop the progam.')
         time.sleep(5)
@@ -71,8 +72,8 @@ if choice == 1:
         dec_key = open('keys.txt','w')
         dec_key.write(decrypted)
         dec_key.close()
-        os.system('cmd /c curl https://github.com/Lord-Giganticus/rpx-extractor/releases/download/core/CDecrypt.exe --output CDecrypt.exe')
-        os.system('cmd /c curl https://github.com/Lord-Giganticus/rpx-extractor/releases/download/core/libeay32.dll --output libeay32.dll')
+        os.system('cmd /c curl -L https://github.com/Lord-Giganticus/rpx-extractor/releases/download/core/CDecrypt.exe > CDecrypt.exe')
+        os.system('cmd /c curl -L https://github.com/Lord-Giganticus/rpx-extractor/releases/download/core/libeay32.dll > libeay32.dll')
         os.system('cmd /c CDecrypt.exe '+os.getcwd()+' '+os.getcwd()+'\output')
         delete = int(input('Do you wish to delete the WUP files?\n[1]Yes\n[2]No\n'))
         if delete == 1:
@@ -114,7 +115,7 @@ if choice == 1:
             os.system('cmd /c start '+os.getcwd())
             exit()
 elif choice == 2:
-    os.system('cmd /c curl https://github.com/Lord-Giganticus/rpx-extractor/releases/download/core/titledumper.exe --output titledumper.exe')
+    os.system('cmd /c curl -L https://github.com/Lord-Giganticus/rpx-extractor/releases/download/core/titledumper.exe > titledumper.exe')
     import socket
     ip = socket.gethostbyname(socket.gethostname())
     print('The ip you need to enter on the Wii U side is "'+ip+'".')
@@ -162,4 +163,92 @@ elif choice == 3:
             ftp.retrbinary("RETR " + file ,open(file, 'wb').write)
     print('Complete. Exiting.')
     time.sleep(5)
+    exit()
+elif choice == 4:
+    import shutil
+    import string
+    from ctypes import windll
+    drives = [] # From https://stackoverflow.com/a/827398
+    bitmask = windll.kernel32.GetLogicalDrives()
+    for letter in string.ascii_uppercase:
+        if bitmask & 1:
+            drives.append(letter)
+        bitmask >>= 1
+    
+    entry = 0
+    entry = int(entry)
+    length = len(drives)
+    while entry < length:
+        name = str(drives[entry])
+        if name.endswith(':') == False:
+            name = name+':'
+            drives[entry] = name
+            entry += 1
+    entry = int(0)
+    found = int(0)
+    while found != 1:
+        try:
+            os.chdir(drives[entry])
+        except PermissionError:
+            try:
+                entry += 1
+                os.chdir(drives[entry])
+            except PermissionError:
+                entry += 1
+                os.chdir(drives[entry])
+        except IndexError:
+            print("No drive found with the dumpling folder. Exiting.")
+            time.sleep(2)
+            exit()
+        if os.path.isdir('dumpling') == False:
+            entry += 1
+        else:
+            found += 1
+    if found == 1:
+        print('dumpling folder found in drive "'+drives[entry]+'". If this is NOT the correct drive please use Control + C to stop the progam.')
+        time.sleep(5)
+        os.chdir('dumpling')
+        ver = int(input("Enter the number corresponding to the type of game it is:\n[1]BASE\n[2]UPDATE\n[3]DLC\n"))
+        if ver == 1:
+            folders = []
+            if os.path.isdir('Games') == False:
+                print('Games folder not found. Exiting.')
+                time.sleep(2)
+                exit()
+            for dir in os.listdir(os.getcwd()):
+                if os.path.isdir(dir) == True:
+                    folders.append(dir)
+            print(folders[:])
+            folder_choice = str("")
+            while folder_choice not in folders:
+                folder_choice = input("Enter the name of the folder you want to get the rpx from:\n")
+            if folder_choice in folders:
+                os.chdir(folder_choice)
+                if os.path.isdir('code') == False:
+                    print("code folder not found. Exiting.")
+                    time.sleep(2)
+                    exit()
+                rpx_files_found = int(0)
+                rpx_files = []
+                for file in os.listdir(os.getcwd()):
+                    if os.path.isfile(file) == True:
+                        if file.endswith('.rpx') == True:
+                            rpx_files_found += 1
+                            rpx_files.append(file)
+                if rpx_files_found > 1:
+                    print("There is more than one rpx file! You'll have to decide which one is correct!")
+                move = int(input("Do you want to move the rpx file?\n[1]Yes\n[2]No\n"))
+                if move == 1:
+                    print(rpx_files[:])
+                    rpx_file = input("Enter the EXACT name of the rpx file you want to move:\n")
+                    folder = input("Enter the directory you want it to be moved to:\n")
+                    shutil.move(rpx_file, folder)
+                else:
+                    pass
+                print("Complete. Exiting.")
+                time.sleep(5)
+                exit()
+elif choice < 0 or choice > 4:
+    print("Improper choice. Exiting.")
+    time.sleep(2)
     exit()
