@@ -44,15 +44,23 @@ if choice == 1:
     entry = int(0)
     found = int(0)
     while found != 1:
-        os.chdir(drives[entry])
-        if os.path.isdir('install') == False:
+        try:
+            os.chdir(drives[entry])
+        except PermissionError:
+            try:
+                entry += 1
+                os.chdir(drives[entry])
+            except PermissionError:
+                entry += 1
+                os.chdir(drives[entry])
+        except IndexError:
+            print("No drive found with the install folder. Exiting.")
+            time.sleep(2)
+            exit()
+        if os.path.isdir('dumpling') == False:
             entry += 1
         else:
             found += 1
-    if entry > len(drives):
-        print("No drive found with the install folder. Exiting.")
-        time.sleep(2)
-        exit()
     if found == 1:
         print('install folder found in drive "'+drives[entry]+'". If this is NOT the correct drive please use Control + C to stop the progam.')
         time.sleep(5)
