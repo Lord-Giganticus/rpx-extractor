@@ -1,6 +1,13 @@
 import os
 import time
 
+### Used for packaging
+__version__ = '1.2.1'
+__author__ = 'Lord-Giganticus <mrubins64@gmail.com>'
+__license__ = 'GPL-3.0 License'
+__url__ = 'https://github.com/Lord-Giganticus/rpx-extractor'
+### Used for packaging
+
 if os.getcwd() != os.path.dirname(__file__):
     os.chdir(os.path.dirname(__file__))
 
