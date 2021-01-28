@@ -1,6 +1,10 @@
 # rpx-extractor
 A python script to extract rpx files from Wii U titles
 
+## Status:
+![Python package](https://github.com/Lord-Giganticus/rpx-extractor/workflows/Python%20package/badge.svg)
+![CodeQL](https://github.com/Lord-Giganticus/rpx-extractor/workflows/CodeQL/badge.svg)
+
 ## Usage:
 `python -3 rpx-extractor.py`
 
