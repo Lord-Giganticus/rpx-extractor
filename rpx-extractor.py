@@ -36,28 +36,30 @@ if choice == 1:
     entry = int(entry)
     length = len(drives)
     while entry < length:
-        name = str(drives[entry])
-        if name.endswith(':') == False:
-            name = name+':'
-            drives[entry] = name
+        try:
+            name = str(drives[entry])
+            if name.endswith(':') == False:
+                name = name+':'
+                drives[entry] = name
+                try:
+                    os.chdir(drives[entry])
+                except:
+                    print("Drive is bad. Removing from list.")
+                    drives.pop(entry)
+                    entry -= 1
             entry += 1
+        except:
+            entry = length +1
     entry = int(0)
     found = int(0)
     while found != 1:
         try:
             os.chdir(drives[entry])
-        except PermissionError:
-            try:
-                entry += 1
-                os.chdir(drives[entry])
-            except PermissionError:
-                entry += 1
-                os.chdir(drives[entry])
         except IndexError:
             print("No drive found with the install folder. Exiting.")
             time.sleep(2)
             exit()
-        if os.path.isdir('dumpling') == False:
+        if os.path.isdir('install') == False:
             entry += 1
         else:
             found += 1
@@ -173,7 +175,6 @@ elif choice == 3:
     time.sleep(5)
     exit()
 elif choice == 4:
-    import shutil
     import string
     from ctypes import windll
     drives = [] # From https://stackoverflow.com/a/827398
@@ -187,23 +188,25 @@ elif choice == 4:
     entry = int(entry)
     length = len(drives)
     while entry < length:
-        name = str(drives[entry])
-        if name.endswith(':') == False:
-            name = name+':'
-            drives[entry] = name
+        try:
+            name = str(drives[entry])
+            if name.endswith(':') == False:
+                name = name+':'
+                drives[entry] = name
+                try:
+                    os.chdir(drives[entry])
+                except:
+                    print("Drive is bad. Removing from list.")
+                    drives.pop(entry)
+                    entry -= 1
             entry += 1
+        except:
+            entry = length +1
     entry = int(0)
     found = int(0)
     while found != 1:
         try:
             os.chdir(drives[entry])
-        except PermissionError:
-            try:
-                entry += 1
-                os.chdir(drives[entry])
-            except PermissionError:
-                entry += 1
-                os.chdir(drives[entry])
         except IndexError:
             print("No drive found with the dumpling folder. Exiting.")
             time.sleep(2)
@@ -223,6 +226,7 @@ elif choice == 4:
                 print('Games folder not found. Exiting.')
                 time.sleep(2)
                 exit()
+            os.chdir('Games')
             for dir in os.listdir(os.getcwd()):
                 if os.path.isdir(dir) == True:
                     folders.append(dir)
@@ -236,6 +240,7 @@ elif choice == 4:
                     print("code folder not found. Exiting.")
                     time.sleep(2)
                     exit()
+                os.chdir('code')
                 rpx_files_found = int(0)
                 rpx_files = []
                 for file in os.listdir(os.getcwd()):
@@ -245,18 +250,18 @@ elif choice == 4:
                             rpx_files.append(file)
                 if rpx_files_found > 1:
                     print("There is more than one rpx file! You'll have to decide which one is correct!")
-                move = int(input("Do you want to move the rpx file?\n[1]Yes\n[2]No\n"))
+                move = int(input("Do you want to copy the rpx file?\n[1]Yes\n[2]No\n"))
                 if move == 1:
                     print(rpx_files[:])
-                    rpx_file = input("Enter the EXACT name of the rpx file you want to move:\n")
-                    folder = input("Enter the directory you want it to be moved to:\n")
-                    shutil.move(rpx_file, folder)
+                    rpx_file = input("Enter the EXACT name of the rpx file you want to copy:\n")
+                    folder = input("Enter the directory you want it to be copied to:\n")
+                    os.system('cmd /c xcopy '+rpx_file+' '+folder)
                 else:
                     pass
                 print("Complete. Exiting.")
                 time.sleep(5)
                 exit()
-elif choice < 0 or choice > 4:
+elif choice < 1 or choice > 4:
     print("Improper choice. Exiting.")
     time.sleep(2)
     exit()
