@@ -4,10 +4,57 @@ import time
 if os.getcwd() != os.path.dirname(__file__):
     os.chdir(os.path.dirname(__file__))
 
+def dumpling_extract(x:str): # This is for the dumpling option, x is either "Games", "Updates", or "DLC".
+    if x != "Games":
+        if x != "Updates":
+            if x != "DLC":
+                print("Improper usage. Exiting.")
+                time.sleep(2)
+                exit()
+    folders = []
+    if os.path.isdir(x) == False:
+        print(x,'folder not found. Exiting.')
+        time.sleep(2)
+        exit()
+    os.chdir(x)
+    for dir in os.listdir(os.getcwd()):
+        if os.path.isdir(dir) == True:
+            folders.append(dir)
+    print(folders[:])
+    folder_choice = str("")
+    while folder_choice not in folders:
+        folder_choice = input("Enter the name of the folder you want to get the rpx from:\n")
+    if folder_choice in folders:
+        os.chdir(folder_choice)
+        if os.path.isdir('code') == False:
+            print("code folder not found. Exiting.")
+            time.sleep(2)
+            exit()
+        os.chdir('code')
+        rpx_files_found = int(0)
+        rpx_files = []
+        for file in os.listdir(os.getcwd()):
+            if os.path.isfile(file) == True:
+                if file.endswith('.rpx') == True:
+                    rpx_files_found += 1
+                    rpx_files.append(file)
+        if rpx_files_found > 1:
+            print("There is more than one rpx file! You'll have to decide which one is correct!")
+        move = int(input("Do you want to copy the rpx file?\n[1]Yes\n[2]No\n"))
+        if move == 1:
+            print(rpx_files[:])
+            rpx_file = input("Enter the EXACT name of the rpx file you want to copy:\n")
+            folder = input("Enter the directory you want it to be copied to:\n")
+            os.system('cmd /c xcopy '+rpx_file+' '+folder)
+        else:
+            pass
+    print("Complete. Exiting.")
+    time.sleep(5)
+    exit()
+
 choice = int(input("Enter the number corresponding to the format you wish to dump the rpx file.\n[1]WUP\n[2]Loadiine\n[3]FTPiiU_Everywhere\n[4]Dumpling\n"))
 if choice == 1:
     from cryptography.fernet import Fernet
-    import shutil
     import string
     from ctypes import windll
     if os.path.isfile('key.key') == False:
@@ -100,8 +147,6 @@ if choice == 1:
         os.remove('libey32.dll')
         os.remove('keys.txt')
         os.chdir('output')
-        shutil.rmtree('content')
-        shutil.rmtree('meta')
         os.chdir('code')
         rpx_file = []
         for file in os.listdir(os.getcwd()):
@@ -109,14 +154,12 @@ if choice == 1:
                 if file.endswith('.rpx'):
                     rpx_file.append(file)
         rpx_file = str(rpx_file[0])
-        move = int(input("rpx file found it's name is "+rpx_file+'\nWould you like to move it somewhere?\n[1]Yes\n[2]No\n'))
+        move = int(input("rpx file found it's name is "+rpx_file+'\nWould you like to copy it somewhere?\n[1]Yes\n[2]No\n'))
         if move == 1:
-            folder = input('Enter where you want to move it:\n')
-            shutil.move(rpx_file, folder)
+            folder = input('Enter where you want to copy it:\n')
+            os.system('cmd /c xcopy '+rpx_file+' '+folder)
             os.chdir('../')
-            shutil.rmtree('code')
-            os.chdir(folder)
-            print("Complete. "+rpx_file+' has been moved to '+os.getcwd()+'\nExiting.')
+            print("Complete. "+rpx_file+' has been copied to '+folder+'\nExiting.')
             time.sleep(5)
             exit()
         elif move == 2:
@@ -221,46 +264,18 @@ elif choice == 4:
         os.chdir('dumpling')
         ver = int(input("Enter the number corresponding to the type of game it is:\n[1]BASE\n[2]UPDATE\n[3]DLC\n"))
         if ver == 1:
-            folders = []
-            if os.path.isdir('Games') == False:
-                print('Games folder not found. Exiting.')
-                time.sleep(2)
-                exit()
-            os.chdir('Games')
-            for dir in os.listdir(os.getcwd()):
-                if os.path.isdir(dir) == True:
-                    folders.append(dir)
-            print(folders[:])
-            folder_choice = str("")
-            while folder_choice not in folders:
-                folder_choice = input("Enter the name of the folder you want to get the rpx from:\n")
-            if folder_choice in folders:
-                os.chdir(folder_choice)
-                if os.path.isdir('code') == False:
-                    print("code folder not found. Exiting.")
-                    time.sleep(2)
-                    exit()
-                os.chdir('code')
-                rpx_files_found = int(0)
-                rpx_files = []
-                for file in os.listdir(os.getcwd()):
-                    if os.path.isfile(file) == True:
-                        if file.endswith('.rpx') == True:
-                            rpx_files_found += 1
-                            rpx_files.append(file)
-                if rpx_files_found > 1:
-                    print("There is more than one rpx file! You'll have to decide which one is correct!")
-                move = int(input("Do you want to copy the rpx file?\n[1]Yes\n[2]No\n"))
-                if move == 1:
-                    print(rpx_files[:])
-                    rpx_file = input("Enter the EXACT name of the rpx file you want to copy:\n")
-                    folder = input("Enter the directory you want it to be copied to:\n")
-                    os.system('cmd /c xcopy '+rpx_file+' '+folder)
-                else:
-                    pass
-                print("Complete. Exiting.")
-                time.sleep(5)
-                exit()
+            choice = str("Games")
+            dumpling_extract(choice)
+        elif ver == 2:
+            choice = str("Updates")
+            dumpling_extract(choice)
+        elif ver == 3:
+            choice = str("DLC")
+            dumpling_extract(choice)
+        else:
+            print("Improper choice. Exiting.")
+            time.sleep(2)
+            exit()
 elif choice < 1 or choice > 4:
     print("Improper choice. Exiting.")
     time.sleep(2)
